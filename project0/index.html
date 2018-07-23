@@ -2,14 +2,48 @@
 <html>
     <head>
         <title>My Webpage</title>
+
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <!-- Latest compiled and minified CSS -->
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+
+        <!-- Optional theme -->
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css" integrity="sha384-rHyoN1iRsVXV4nD0JutlnGaslCJuC7uwjduW9SVrLvRYooPp2bWYgmgJQIXwl/Sp" crossorigin="anonymous">
+
+        <!-- Latest compiled and minified JavaScript -->
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
     </head>
     <body>
-        <header>
-            <h3><a href='index.html'>Home</a></h3>
-            <h3><a href='hiking.html'>Hiking Microblog</a></h3>
-            <h3><a href='yogaschedule.html'>Yoga Schedule</a></h3>
-            <h3><a href='contact.html'>Contact Me</a></h3>
-        </header>
-        Welcome to my website! I'm Robert and I'm learning about web devlopment (amongst other things). Right now I'm using this site to develop and show off my HTML, CSS, Python, and Javascript skills. Check out the links above to see what I'm developing.
+        <div class="container">
+            <div class="row">
+                <div class="col-sm-3">
+                    <h3><a href='index.html'>Home</a></h3>
+                </div>
+                <div class="col-sm-3">
+                    <h3><a href='hiking.html'>Hiking Microblog</a></h3>
+                </div>
+                <div class="col-sm-3">
+                    <h3><a href='yogaschedule.html'>Yoga Schedule</a></h3>
+                </div>
+                <div class="col-sm-3">
+                    <h3><a href='contact.html'>Contact Me</a></h3>
+                </div>
+            </div>
+            <div class='row'>
+                <div class="col-sm-2"></div>
+                <div class="col-sm-8">
+                    <p>Welcome to my website! I'm Robert and I'm learning about web devlopment (amongst other things). Right now I'm using this site to develop and show off my HTML, CSS, Python, and Javascript skills. Check out the links above to see what I'm developing.</p>
+                    <p>This website has 4 sections:</p>
+                    <ol>
+                        <li>The Home Page</li>
+                        <li>A hiking microblog aka Medium feed clone</li>
+                        <li>A schedule of yoga classes that I'm interested in taking</li>
+                        <li>A page to contact me!</li>
+                    </ol>
+                </div>
+                <div class="col-sm-2"></div>
+            </div>
+        </div>
     </body>
 </html>

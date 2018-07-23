@@ -1,0 +1,16 @@
+header {
+    hs {
+        color:blue;
+        text-align:right;
+    }
+}
+
+$text_color_shared: #0900ff;
+
+%text-shared {
+    color:$text_color_shared;
+}
+
+.text {
+    @extend %text-shared;
+}
