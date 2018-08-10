@@ -1,0 +1,74 @@
+{% extends "layout.html" %}
+
+{% block title %}
+    {{ book_info['title'] }}
+{% endblock %}
+
+{% block main %}
+    <table class="book-info">
+        <tr><th></th><th>Book Info:</th>
+        {% for key in ['isbn', 'title', 'author', 'year'] %}
+            <tr>
+                <td>{{ key }}</td>
+                <td>{{ book_info[key] }}</td>
+            </tr>
+        {% endfor %}
+    </table>
+    <br>
+    <table class='goodread-data'>
+        <tr><td>Goodreads Number of Reviews: {{ goodreads_data['ratings_count'] }}</td></tr>
+        <tr><td>Goodreads Average Rating: {{ goodreads_data['average_rating'] }}</td></tr>
+    </table>
+    <br>
+    {% if not user_has_reviewed %}
+        <div>
+            <form id='review-form' action="/book/{{ book_info['isbn'] }}" method="post">
+                <fieldset>
+                    <legend>Submit Your Review:</legend>
+                    <span>Rating: </span>
+                    <select class='button' name='review_stars' required>
+                        <option value=''>Select Rating</option>
+                        <option value=5>5</option>
+                        <option value=4>4</option>
+                        <option value=3>3</option>
+                        <option value=2>2</option>
+                        <option value=1>1</option>
+                    </select>
+                    <br>
+                    <br>
+                    <input type="text" id="review-text" name="review_text" placeholder="Type Review Here" autocomplete="off" required><br><br>
+
+                    <input type="hidden" name="user_id" value="{{ userid }}"/>
+                    <input type="hidden" name="book_isbn" value="{{ book_info['isbn'] }}"/>
+                    <br>
+                    <input class='button' type="submit" value="Submit">
+                </fieldset>
+            </form>
+        </div>
+    {% endif %}
+    <br>
+    {% if reviews|length > 0 %}
+        <div>
+            <table class='review-table'>
+                <tr>
+                    <th>Username</th>
+                    <th>Rating Out Of 5</th>
+                    <th>Review</th>
+                    <th>Date Reviewed</th>
+                </tr>
+
+                {% for review in reviews %}
+                <tr>
+                    <td>{{ review['username'] }}</td>
+                    <td>{{ review['review_stars'] }}</td>
+                    <td>{{ review['review_text'] }}</td>
+                    <td>{{ review['date_created'] }}</td>
+                </tr>
+                {% endfor %}
+            </table>
+        </div>
+    {% else %}
+        <div id='no-reviews-notice' style='padding:8px;'>No reviews yet left</div>
+    {% endif %}
+
+{% endblock %}

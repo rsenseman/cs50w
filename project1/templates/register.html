@@ -1,0 +1,23 @@
+{% extends "layout.html" %}
+
+{% block title %}
+    Login
+{% endblock %}
+
+{% block main %}
+    <div class='intro-text'>
+       <div>Register here to enter Robert's book emporium!</div>
+    </div>
+    <form action="/register" method="post">
+        <div class="form-group">
+            <input autocomplete="off" class='small-form' autofocus name="username" placeholder="Username" type="text" required/>
+        </div>
+        <div class="form-group">
+            <input class='small-form' name="password" placeholder="Password" type="password" required/>
+        </div>
+        <div class="form-group">
+            <input class='small-form' name="confirmation" placeholder="Password Confirmation" type="password" required/>
+        </div>
+        <button class="button" type="submit">Register</button>
+    </form>
+{% endblock %}

@@ -1,0 +1,33 @@
+{% extends "layout.html" %}
+
+{% block title %}
+    Home
+{% endblock %}
+
+{% block main %}
+    <div class='intro-text'>
+        <div>Use the search bar to find the work of your choice</div>
+    </div>
+    <form action="/" method="post">
+        <div class="form-group">
+            <input autocomplete="off" class='small-form' autofocus name="search_term" placeholder="search" type="text"/>
+        </div>
+        <button class="button" type="submit">Search</button>
+    </form>
+    {% if results is defined %}
+        {% if results|length == 0 %}
+            <div id='noresults'>No Search Results Found</div>
+        {% else %}
+        <div class='intro-text'>
+            <div>Search Results:</div>
+            <ul>
+                {% for book in results %}
+                    {% set isbn, title, author, year = book %}
+                    <li class=search-results><a href='/book/{{ isbn }}'>Book Details</a> {{ year }} {{ title }}, {{ author }}</li>
+                {% endfor %}
+            {% endif %}
+            </ul>
+        </div>
+    {% endif %}
+
+{% endblock %}

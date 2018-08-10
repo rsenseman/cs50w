@@ -1,0 +1,119 @@
+/*  whole site formatting */
+:root {
+    --dark-purple: #443266;
+    --lavender: #C3C3E5;
+    --off-white: #FFFFFF;
+    --purple: #8C489F;
+
+    --field-padding: 8px;
+
+    background-color: var(--off-white);
+}
+
+body, input, select {
+    font-family: arial;
+}
+
+table, th, td {
+    border: 1px solid;
+}
+
+table {
+   /* border-collapse: collapse; */
+   border-color: var(--dark-purple);
+   border-radius: 5px;
+}
+
+th, td {
+    padding: var(--field-padding);
+}
+
+th {
+    background-color: var(--dark-purple);
+    color: var(--off-white);
+    border-color: var(--off-white);
+}
+
+td {
+    color: var(--dark-purple);
+    border-color: var(--dark-purple);
+}
+
+.site-header {
+    overflow: hidden;
+    background-color: var(--dark-purple);
+    position: fixed; /* Set the navbar to fixed position */
+    top: 0; /* Position the navbar at the top of the page */
+    width: 100%; /* Full width */
+}
+
+/* Home Page */
+.small-form {
+    border: 1px solid;
+    border-color: var(--dark-purple);
+    background-color: var(--off-white);
+    color: var(--dark-purple);
+    border-radius: 5px;
+    padding: 5px;
+    margin: 5px;
+}
+
+.intro-text {
+    padding: 8px;
+}
+
+/* Links inside the navbar */
+.site-header a {
+    float: left;
+    font-weight: bold;
+    display: block;
+    color: var(--off-white);
+    text-align: center;
+    padding: 14px 16px;
+    text-decoration: none;
+}
+
+#logout-bar-button {
+    float: right;
+}
+
+/* Change background on mouse-over */
+.site-header a:hover {
+    background: var(--off-white);
+    color: var(--dark-purple);
+}
+
+/* Main content */
+main {
+    margin-top: 58px; /* Add a top margin to avoid content overlay */
+}
+
+/*  book details styling */
+#review-text {
+    height:200px;
+    width:600px;
+    border: 1px solid;
+    border-color: var(--dark-purple);
+    background-color: var(--off-white);
+    color: var(--dark-purple);
+    border-radius: 5px;
+}
+
+fieldset, legend {
+    border: 1px solid;
+    border-color: var(--dark-purple);
+    text-align:left;
+    color: var(--dark-purple);
+    padding: var(--field-padding);
+    border-radius: 5px;
+}
+
+.button {
+    border: 1px solid;
+    border-color: var(--dark-purple);
+    background-color: var(--dark-purple);
+    color: var(--off-white);
+    border-radius: 5px;
+    padding: 5px;
+    margin: 5px;
+}
