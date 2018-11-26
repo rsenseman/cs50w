@@ -1,6 +1,6 @@
 # Project 1: Robert's Book Emporium
 
-For this project, I created a simple website to let users leave reviews on a set of books. Users must login to use the site and may leave one review per work. I chose a purple and white color scheme for the site :)
+For this project, I created a simple website to let users leave reviews on a set of books. Users must login to use the site and may leave one review per work.
 
 The file structure is as follows:
 
