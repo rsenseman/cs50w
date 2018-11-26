@@ -7,14 +7,14 @@ The file structure is as follows:
 Project 1
 
 * static/
- * main.css: this contains all of the css styling for the site
+  * main.css: this contains all of the css styling for the site
 * templates/
- * book_details.html: html for the book details and reviews page
- * error.html: html for when a user hits an error
- * homesearch.html: The landing/search page html
- * layout.html: The base html extended for all other pages
- * login.html: login page
- * registration.html: registration page
+  * book_details.html: html for the book details and reviews page
+  * error.html: html for when a user hits an error
+  * homesearch.html: The landing/search page html
+  * layout.html: The base html extended for all other pages
+  * login.html: login page
+  * registration.html: registration page
 * application.py: handles all the backend logic
 * book_load.py: script use to add books to database
 * helpers.py: python logic that supports the primary flask application
