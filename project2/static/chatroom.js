@@ -41,7 +41,7 @@ function add_channel() {
 function finalize_channel() {
     console.log(this.firstElementChild.value);
     link = document.createElement("A");
-    link.setAttribute("href", `/${this.firstElementChild.value}`)
+    link.setAttribute("href", `/channel/${this.firstElementChild.value}`)
     link.innerHTML = this.firstElementChild.value;
 
     li = this.parentElement
@@ -74,6 +74,7 @@ function submit_message() {
     new_text.appendChild(new_content);
     container.appendChild(new_text);
 
+    // reset field and local storage to empty strings
     localStorage.setItem('user_input', '')
     input.value = '';
     return false;

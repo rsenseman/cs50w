@@ -11,13 +11,16 @@
     </head>
     <body>
         <header class='chatroom-header'>
-            <span>{{ username }}</span>
+            <span>{{ data['username'] }}</span>
             <a id='logout-bar-button' href='/login'>Logout</a>
         </header>
         <main>
             <div class="wrapper">
                 <div id="channel-list">
                     <ul id="channel-list-items" style="padding:0;list-style-type:none;">
+                    {% for channel_name in data['channel_names'] %}
+                        <li><a href="/channel/{{ channel_name }}">{{ channel_name }}</a></li>
+                    {% endfor %}
                     </ul>
                     <input id="add-channel-button" type="submit" value="+ Add New Channel" style="width:100%;"></input>
                 </div>
