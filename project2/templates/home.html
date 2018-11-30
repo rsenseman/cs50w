@@ -4,7 +4,7 @@
         <meta charset='utf-8'>
         <link rel="stylesheet" href="/static/main.css">
         <script type="text/javascript">
-            var username = "{{ username }}";
+            var username = "{{ data['username'] }}";
         </script>
         <script src="/static/chatroom.js"></script>
         <title>chatroom</title>
@@ -19,19 +19,15 @@
                 <div id="channel-list">
                     <ul id="channel-list-items" style="padding:0;list-style-type:none;">
                     {% for channel_name in data['channel_names'] %}
-                        <li><a href="/channel/{{ channel_name }}">{{ channel_name }}</a></li>
+                        <li><a class="channel-in-channel-list">{{ channel_name }}</a></li>
                     {% endfor %}
                     </ul>
                     <input id="add-channel-button" type="submit" value="+ Add New Channel" style="width:100%;"></input>
                 </div>
-                <div id="channel-content">
-                    <div>
-                        When you submit text to the channel, it will show up here.
-                    </div>
-                </div>
+                <div id="channel-content"></div>
                 <div class="blank"></div>
                 <div id="user-input">
-                    <form style="width:100%;height:100%;">
+                    <form id="user-input-form" style="width:100%;height:100%;" hidden>
                         <input id="user-input-field" type="text" name="post_text" autofocus placeholder="Type Your Message Here"></input>
                         <input id="submit-new-button" type="submit" style="width:10%;height:100%;"></input>
                     </form>

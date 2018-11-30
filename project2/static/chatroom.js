@@ -2,6 +2,12 @@ document.addEventListener('DOMContentLoaded', function() {
     document.getElementById('add-channel-button').onclick = add_channel;
     document.getElementById('submit-new-button').onclick = submit_message;
 
+    channels = document.getElementsByClassName('channel-in-channel-list')
+    for (channel of channels) {
+        channel.href='javascript:'
+        channel.onclick=show_channel;
+    }
+
     // handle persisting user input in submit field. storage of user_input
     //     will be cleared in submit_message
     // on document load, retrieve last value from local storage
@@ -13,6 +19,7 @@ document.addEventListener('DOMContentLoaded', function() {
         localStorage.setItem('user_input', this.value);
     }
 
+    document.getElementById("channel-content").innerHTML='Welcome to the chatroom!';
 });
 
 function add_channel() {
@@ -39,10 +46,23 @@ function add_channel() {
 }
 
 function finalize_channel() {
-    console.log(this.firstElementChild.value);
+    const request = new XMLHttpRequest();
+    const channel_name = this.firstElementChild.value;
+
+    request.open('POST', '/add_new_channel');
+    request.onload = () => {
+        const request_data = JSON.parse(request.responseText);
+    }
+    const data = new FormData();
+    data.append('channel_name', channel_name);
+    request.send(data);
+
+    console.log(channel_name);
     link = document.createElement("A");
-    link.setAttribute("href", `/channel/${this.firstElementChild.value}`)
-    link.innerHTML = this.firstElementChild.value;
+    link.onclick = show_channel;
+    link.setAttribute("class", "channel-in-channel-list")
+    // link.setAttribute("href", `/channel/${channel_name}`)
+    link.innerHTML = channel_name;
 
     li = this.parentElement
     li.innerHTML = '';
@@ -54,25 +74,69 @@ function finalize_channel() {
     return false;
 }
 
-function submit_message() {
+function show_channel() {
+    // clear existing content
+    // history.pushState('whatever', `${this.innerHTML}`, `/channel/${this.innerHTML}`);
+    document.getElementById("channel-content").innerHTML='';
+    document.getElementById("user-input-form").removeAttribute('hidden');
+
+    const request = new XMLHttpRequest();
+    request.open('GET', `/channel/${this.innerHTML}`);
+    request.onload = () => {
+        const request_data = JSON.parse(request.responseText);
+        const messages = Object.entries(request_data.messages)
+        console.log(messages)
+        for (message_arr of messages) {
+            console.log(message_arr)
+            console.log(message_arr[1])
+            let [time, user, message] = message_arr[1]
+            add_new_message(time, user, message)
+        }
+
+        if (document.getElementById("channel-content").children.length === 0) {
+            add_intro();
+        }
+    }
+    request.send();
+}
+
+function add_intro() {
+    time_string = new Date().toLocaleTimeString();
+    add_new_message(
+        time_string,
+        'Helpful Harold',
+        'When you submit text to the channel, it will show up here.'
+    );
+}
+
+function add_new_message(date_string, username, message) {
     container = document.getElementById("channel-content");
     new_text = document.createElement("div");
 
-    date_string = new Date().toLocaleTimeString();
     time_string = document.createElement("span");
+    time_string.setAttribute("class", "time-sent");
     time_string.appendChild(document.createTextNode(`${date_string} `));
 
     preface = document.createElement("span");
+    preface.setAttribute("class", "sender");
     preface.appendChild(document.createTextNode(`${username}: `));
 
-    input = document.getElementById("user-input-field");
     new_content = document.createElement("span");
-    new_content.appendChild(document.createTextNode(`${input.value}`));
+    new_content.setAttribute("class", "message-text");
+    new_content.appendChild(document.createTextNode(`${message}`));
 
     new_text.appendChild(time_string);
     new_text.appendChild(preface);
     new_text.appendChild(new_content);
     container.appendChild(new_text);
+
+    return false;
+}
+
+function submit_message() {
+    date_string = new Date().toLocaleTimeString();
+    input = document.getElementById("user-input-field");
+    add_new_message(date_string, username, input.value)
 
     // reset field and local storage to empty strings
     localStorage.setItem('user_input', '')

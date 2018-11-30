@@ -29,15 +29,27 @@ def index():
     data['username'] = session['username']
     return render_template("home.html", data=data)
 
+@app.route('/add_new_channel', methods=['POST'])
+def add_new_channel():
+    query = text('''INSERT INTO channels ("name", "creator") VALUES (:name, :creator);''').execution_options(autocommit=True)
+    result = db.execute(query, {'name': request.form.get('channel_name'), 'creator': session['username']})
+    print(db.execute('select * from channels').fetchall())
+    print(result)
+    db.commit()
+    return 'channel_added'
+
 def get_channel_list():
     rows = db.execute('SELECT name FROM channels ORDER BY time_added').fetchall()
     channel_names = [row['name'] for row in rows]
     return channel_names
 
-def get_messages(channel_name):
-    query = text('SELECT * FROM messages WHERE channel=:channel_name ORDER BY time_added')
+@app.route('/channel/<channel_name>', methods=['GET', 'POST'])
+def get_channel_messages(channel_name):
+    print(f'getting messages for {channel_name}')
+    query = text("SELECT to_char(time_added, 'HH12:MI:SS AM'), user, message FROM messages WHERE channel=:channel_name ORDER BY time_added LIMIT 100")
     rows = db.execute(query, {'channel_name': channel_name}).fetchall()
-    return rows
+    print([row.values() for row in rows])
+    return jsonify({'messages': [row.values() for row in rows]})
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():

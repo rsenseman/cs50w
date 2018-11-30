@@ -59,3 +59,12 @@ header {
     height: 95%;
     word-wrap: break-word;
 }
+
+.time-sent {
+    font-size: 80%;
+    color: gray;
+}
+
+.sender {
+    font-weight: bold;
+}
