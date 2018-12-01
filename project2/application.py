@@ -23,33 +23,69 @@ def index():
     if not session.get('username'):
         return redirect("/login")
     print(f'logged in as {session["username"]}')
+    print(f'last channel: {session.get("last_page")}')
+    return load_home()
 
+
+def load_home(channel_select=None):
     data=dict()
     data['channel_names'] = get_channel_list()
     data['username'] = session['username']
+
+    if channel_select:
+        data['channel_select'] = channel_select
+        session['last_page'] = channel_select
+    elif session.get('last_page'):
+        data['channel_select'] = session['last_page']
+    else:
+        data['channel_select'] = ''
+
     return render_template("home.html", data=data)
+
 
 @app.route('/add_new_channel', methods=['POST'])
 def add_new_channel():
-    query = text('''INSERT INTO channels ("name", "creator") VALUES (:name, :creator);''').execution_options(autocommit=True)
-    result = db.execute(query, {'name': request.form.get('channel_name'), 'creator': session['username']})
-    print(db.execute('select * from channels').fetchall())
-    print(result)
+    query = text('''INSERT INTO channels ("channel_name", "creator") VALUES (:channel_name, :creator);''')
+    result = db.execute(query, {'channel_name': request.form.get('channel_name'), 'creator': session['username']})
     db.commit()
+    print(db.execute('select * from channels').fetchall())
     return 'channel_added'
 
+
 def get_channel_list():
-    rows = db.execute('SELECT name FROM channels ORDER BY time_added').fetchall()
-    channel_names = [row['name'] for row in rows]
+    rows = db.execute('SELECT channel_name FROM channels ORDER BY time_added').fetchall()
+    channel_names = [row['channel_name'] for row in rows]
     return channel_names
+
 
 @app.route('/channel/<channel_name>', methods=['GET', 'POST'])
 def get_channel_messages(channel_name):
-    print(f'getting messages for {channel_name}')
-    query = text("SELECT to_char(time_added, 'HH12:MI:SS AM'), user, message FROM messages WHERE channel=:channel_name ORDER BY time_added LIMIT 100")
-    rows = db.execute(query, {'channel_name': channel_name}).fetchall()
-    print([row.values() for row in rows])
-    return jsonify({'messages': [row.values() for row in rows]})
+    session['last_page'] = channel_name
+    if request.method == 'POST':
+        print(f'getting messages for {channel_name}')
+        query = text("SELECT to_char(time_added, 'HH12:MI:SS AM'), username, message FROM messages WHERE channel=:channel_name ORDER BY time_added LIMIT 100")
+        rows = db.execute(query, {'channel_name': channel_name}).fetchall()
+        print([row.values() for row in rows])
+        return jsonify({'messages': [row.values() for row in rows]})
+    else:
+        return load_home(channel_name)
+
+
+@app.route('/submit_message', methods=['POST'])
+def submit_message():
+    query = text('''INSERT INTO messages ("time_added", "channel", "username", "message") VALUES (to_timestamp(:timestamp), :channel, :username, :message);''')
+    result = db.execute(query, {
+                                'timestamp': request.form.get('timestamp'),
+                                'channel': request.form.get('channel_name'),
+                                'username': session['username'],
+                                'message': request.form.get('message_text'),
+                                }
+    )
+    print(db.execute('select * from channels').fetchall())
+    print(result)
+    db.commit()
+    return 'message_stored'
+
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():

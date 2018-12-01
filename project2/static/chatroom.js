@@ -18,8 +18,14 @@ document.addEventListener('DOMContentLoaded', function() {
     document.getElementById('user-input-field').onkeyup = function() {
         localStorage.setItem('user_input', this.value);
     }
-
-    document.getElementById("channel-content").innerHTML='Welcome to the chatroom!';
+    url_arr = window.location.href.substring(0).split('/')
+    if (url_arr.length > 4) {
+        show_channel(url_arr[url_arr.length-1]);
+    } else if (channel_select.length > 0) {
+        show_channel(channel_select);
+    } else {
+        document.getElementById("channel-content").innerHTML='Welcome to the chatroom!';
+    }
 });
 
 function add_channel() {
@@ -74,18 +80,22 @@ function finalize_channel() {
     return false;
 }
 
-function show_channel() {
+function show_channel(channel_name) {
     // clear existing content
     // history.pushState('whatever', `${this.innerHTML}`, `/channel/${this.innerHTML}`);
     document.getElementById("channel-content").innerHTML='';
     document.getElementById("user-input-form").removeAttribute('hidden');
+    // if channel_name is a click event instead of a string, replace it with the
+    // link contents
+    if (!(typeof channel_name === 'string' || channel_name instanceof String)) {
+        channel_name = this.innerHTML;
+    }
 
     const request = new XMLHttpRequest();
-    request.open('GET', `/channel/${this.innerHTML}`);
+    request.open('POST', `/channel/${channel_name}`);
     request.onload = () => {
         const request_data = JSON.parse(request.responseText);
         const messages = Object.entries(request_data.messages)
-        console.log(messages)
         for (message_arr of messages) {
             console.log(message_arr)
             console.log(message_arr[1])
@@ -96,6 +106,8 @@ function show_channel() {
         if (document.getElementById("channel-content").children.length === 0) {
             add_intro();
         }
+
+        history.replaceState(channel_name, null, `/channel/${channel_name}`);
     }
     request.send();
 }
@@ -134,9 +146,26 @@ function add_new_message(date_string, username, message) {
 }
 
 function submit_message() {
-    date_string = new Date().toLocaleTimeString();
+    date = new Date();
+    date_string = date.toLocaleTimeString();
+    date_timestamp = date.getTime();
     input = document.getElementById("user-input-field");
-    add_new_message(date_string, username, input.value)
+    message_text = input.value;
+
+    url_arr = window.location.href.substring(0).split('/')
+    channel_name = url_arr[url_arr.length-1];
+
+    const request = new XMLHttpRequest();
+    request.open('POST', '/submit_message');
+
+    const data = new FormData();
+    data.append('channel_name', channel_name);
+    data.append('message_text', message_text);
+    data.append('timestamp', date_timestamp);
+
+    request.send(data);
+
+    add_new_message(date_string, username, message_text)
 
     // reset field and local storage to empty strings
     localStorage.setItem('user_input', '')
