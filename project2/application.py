@@ -107,3 +107,8 @@ def login():
     # User reached route via GET (as by clicking a link or via redirect)
     else:
         return render_template("login.html")
+
+@socketio.on('new_message')
+def broadcast_new_message(data):
+    emit('new_message', data, broadcast=True)
+    return 'message emitted'

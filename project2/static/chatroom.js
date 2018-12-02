@@ -1,6 +1,10 @@
+
+
 document.addEventListener('DOMContentLoaded', function() {
     document.getElementById('add-channel-button').onclick = add_channel;
     document.getElementById('submit-new-button').onclick = submit_message;
+
+
 
     channels = document.getElementsByClassName('channel-in-channel-list')
     for (channel of channels) {
@@ -18,7 +22,7 @@ document.addEventListener('DOMContentLoaded', function() {
     document.getElementById('user-input-field').onkeyup = function() {
         localStorage.setItem('user_input', this.value);
     }
-    url_arr = window.location.href.substring(0).split('/')
+    url_arr = window.location.href.substring(0).split('/');
     if (url_arr.length > 4) {
         show_channel(url_arr[url_arr.length-1]);
     } else if (channel_select.length > 0) {
@@ -26,6 +30,21 @@ document.addEventListener('DOMContentLoaded', function() {
     } else {
         document.getElementById("channel-content").innerHTML='Welcome to the chatroom!';
     }
+
+    // connect to socketio
+    socket = io.connect(location.protocol + '//' + document.domain + ':' + location.port);
+
+    socket.on('new_message', data => {
+        console.log('new message here')
+        console.log(data)
+        channel_submitted_to = data.channel_name;
+        url_arr = window.location.href.substring(0).split('/');
+        if ((url_arr.length > 4) && (url_arr[url_arr.length-1]===channel_submitted_to)) {
+            add_new_message(data.date_string, data.username, data.message_text);
+        }
+        return false;
+    });
+
 });
 
 function add_channel() {
@@ -63,7 +82,6 @@ function finalize_channel() {
     data.append('channel_name', channel_name);
     request.send(data);
 
-    console.log(channel_name);
     link = document.createElement("A");
     link.onclick = show_channel;
     link.setAttribute("class", "channel-in-channel-list")
@@ -155,6 +173,11 @@ function submit_message() {
     url_arr = window.location.href.substring(0).split('/')
     channel_name = url_arr[url_arr.length-1];
 
+    // Send the message two places:
+    // 1) send a request to flask server to store it in the database
+    // 2) emit the submission to socketio
+
+    // submit the message to the flask server to be stored
     const request = new XMLHttpRequest();
     request.open('POST', '/submit_message');
 
@@ -165,7 +188,13 @@ function submit_message() {
 
     request.send(data);
 
-    add_new_message(date_string, username, message_text)
+    // emit the submission
+    socket.emit('new_message', {
+        'channel_name': channel_name,
+        'message_text': message_text,
+        'date_string': date_string,
+        'username': username
+    });
 
     // reset field and local storage to empty strings
     localStorage.setItem('user_input', '')
