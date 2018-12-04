@@ -1,3 +1,4 @@
+#!/usr/bin/python3
 from datetime import datetime
 import json
 import os
@@ -15,7 +16,7 @@ from werkzeug.security import check_password_hash, generate_password_hash
 app = Flask(__name__)
 
 # Check for environment variable
-if not os.getenv('DATABASE_URL'):
+if not os.getenv('DATABASE_URL_BOOKS'):
     raise RuntimeError('DATABASE_URL is not set')
 
 if not os.getenv('GOODREADS_KEY'):
@@ -28,7 +29,7 @@ app.config['SESSION_TYPE'] = 'filesystem'
 Session(app)
 
 # Set up database
-engine = create_engine(os.getenv('DATABASE_URL'))
+engine = create_engine(os.getenv('DATABASE_URL_BOOKS'))
 db = scoped_session(sessionmaker(bind=engine))
 
 
