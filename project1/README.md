@@ -2,10 +2,11 @@
 
 For this project, I created a simple website to let users leave reviews on a set of books. Users must login to use the site and may leave one review per work.
 
+Video showing functionality here: https://youtu.be/3xoDOVof1Cs
+
 The file structure is as follows:
 
 Project 1
-
 * static/
   * main.css: this contains all of the css styling for the site
 * templates/
