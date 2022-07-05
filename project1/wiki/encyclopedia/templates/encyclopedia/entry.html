@@ -1,0 +1,15 @@
+{% extends "encyclopedia/layout.html" %}
+
+{% block title %}
+    {{ title }}
+{% endblock %}
+
+{% block body %}
+    {% if entry %}
+        <h1>{{ title }}</h1>
+        {{ entry }}
+    {% else %}
+        There is no entry in the encyclopedia for the requested URL,
+        just like there is no hope in my heart #ImThinkingArbys
+    {% endif %}
+{% endblock %}
