@@ -6,8 +6,13 @@
 
 {% block body %}
     {% if entry %}
-        <h1>{{ title }}</h1>
-        {{ entry }}
+        <form action="{% url 'edit' %}" method="get">
+        <input type="hidden" id="entry-title-input" name="title" value="{{ title }}">
+        <input type="submit" value="Edit">
+        </form>
+
+        <!-- <h1>{{ title }}</h1> -->
+        {{ entry|safe }}
     {% else %}
         There is no entry in the encyclopedia for the requested URL,
         just like there is no hope in my heart #ImThinkingArbys

@@ -5,9 +5,10 @@ from django.http import HttpResponseRedirect
 from django.urls import reverse
 from django import forms
 
-
-
 from . import util
+
+import markdown2
+from random import choice
 
 
 def index(request):
@@ -17,7 +18,7 @@ def index(request):
 
 def entry(request, title):
     return render(request, "encyclopedia/entry.html", {
-        "entry": util.get_entry(title),
+        "entry": markdown2.markdown(util.get_entry(title)),
         "title": title,
     })
 
@@ -46,7 +47,8 @@ class NewEntryTitleField(forms.CharField):
         super().validate(value)
         if does_entry_already_exist(value):
             raise ValidationError(
-                f"There is already an entry for {value}"
+                f"There is already an entry for {value}. Duplicates "
+                "and/or overwrites not permitted from create UI"
             )
 
 class NewEntryForm(forms.Form):
@@ -59,10 +61,12 @@ def create(request):
 
         # Check if form data is valid (server-side)
         if form.is_valid():
-            title = form.cleaned_data['title']
-            body = form.cleaned_data['body']
-            print(title, body)
-
+            title, body = form.cleaned_data['title'], form.cleaned_data['body']
+            util.save_entry(
+                title,
+                body
+            )
+            return HttpResponseRedirect(reverse('entry', args=[title]))
         else:
             print(form)
             return render(request, "encyclopedia/create.html", {
@@ -71,3 +75,63 @@ def create(request):
     return render(request, "encyclopedia/create.html", {
         'form': NewEntryForm
     })
+
+
+def make_edit_form(entry_title, entry_content):
+    class EditEntryForm(forms.Form):
+        title = forms.CharField(
+            label="Entry Title",
+            initial=entry_title,
+            widget=forms.TextInput(attrs={
+                'value':entry_title,
+                'disabled':None,
+            })
+        )
+
+        body = forms.CharField(
+            label="Entry Body",
+            min_length=1,
+            widget=forms.TextInput(attrs={
+                'value':entry_content,
+            })
+        )
+    return EditEntryForm
+
+def is_content_valid():
+    return True
+
+def edit(request):
+    if request.method == 'POST':
+        print(request.POST)
+        title = request.POST.get('title')
+        content = request.POST.get('body')
+
+        print(title, content)
+        # Check if form data is valid (server-side)
+        if is_content_valid():
+            util.save_entry(
+                title,
+                content
+            )
+            return HttpResponseRedirect(reverse('entry', args=[title]))
+        else:
+            form = make_edit_form(title, content)
+            return render(request, "encyclopedia/edit.html", {
+                'form': form
+            })
+    else:
+        title = request.GET.get('title')
+        content = util.get_entry(title)
+
+        edit_form = make_edit_form(title, content)
+
+        return render(request, "encyclopedia/edit.html", {
+            'form': edit_form,
+            'title': title,
+            'content': content,
+        })
+
+def random(request):
+    all_entries = util.list_entries()
+    random_entry = choice(all_entries)
+    return HttpResponseRedirect(reverse('entry', args=[random_entry]))
