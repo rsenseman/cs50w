@@ -37,10 +37,15 @@ def search(request):
         })
 
 def does_entry_already_exist(prospective_entry):
+    ''' Given a title, check to see if that title already has an entry
+    '''
     all_entries = set(entry.lower() for entry in util.list_entries())
     return prospective_entry.lower() in all_entries
 
 class NewEntryTitleField(forms.CharField):
+    ''' Django form field used to collect the title of an entry. Field is
+    extended so that custom validation can be implemented.
+    '''
     def validate(self, value):
         """Check if title value already exists."""
         # Use the parent's handling of required fields, etc.
@@ -52,6 +57,8 @@ class NewEntryTitleField(forms.CharField):
             )
 
 class NewEntryForm(forms.Form):
+    ''' Django form to collect info for new entries
+    '''
     title = NewEntryTitleField(label="Entry Title", min_length=1)
     body = forms.CharField(label="Entry Body", min_length=1)
 
@@ -78,6 +85,9 @@ def create(request):
 
 
 def make_edit_form(entry_title, entry_content):
+    ''' Factory function to create the form class that relies
+    on the entry title and contents for definition
+    '''
     class EditEntryForm(forms.Form):
         title = forms.CharField(
             label="Entry Title",
