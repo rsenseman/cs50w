@@ -1,3 +1,12 @@
+@font-face {
+  font-family: "google_roboto";
+  src: url("/Users/robert/Desktop/cs50w/project0/Roboto/Roboto-Light.ttf");
+}
+
+body {
+  font-family: "google_roboto";
+}
+
 .navigation-links {
     text-align:right;
 }
