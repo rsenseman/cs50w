@@ -1,24 +1,25 @@
 from django.contrib.auth.models import AbstractUser
 from django.db import models
+from django.core.exceptions import ValidationError
 
 class User(AbstractUser):
     watched = models.ManyToManyField('AuctionListing')
 
 class ListingCategories(models.TextChoices):
-    EM = 'eBay Motors'
-    E = 'Electronics'
-    CA = 'Collectibles & Art'
-    HG = 'Home & Garden'
-    CSA = 'Clothing, Shoes & Accessories'
-    TH = 'Toys & Hobbies'
-    SG = 'Sporting Goods'
-    BMM = 'Books, Movies & Music'
-    HB = 'Health & Beauty'
-    BI = 'Business & Industrial'
-    JW = 'Jewelry & Watches'
-    BE = 'Baby Essentials'
-    PS = 'Pet Supplies'
-    O = 'Other'
+    EM = 'em', 'eBay Motors'
+    E = 'e', 'Electronics'
+    CA = 'ca', 'Collectibles & Art'
+    HG = 'hg', 'Home & Garden'
+    CSA = 'csa', 'Clothing, Shoes & Accessories'
+    TH = 'th', 'Toys & Hobbies'
+    SG = 'sg', 'Sporting Goods'
+    BMM = 'bmm', 'Books, Movies & Music'
+    HB = 'hb', 'Health & Beauty'
+    BI = 'bi', 'Business & Industrial'
+    JW = 'jw', 'Jewelry & Watches'
+    BE = 'be', 'Baby Essentials'
+    PS = 'ps', 'Pet Supplies'
+    O = 'o', 'Other'
 
 class AuctionListing(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
@@ -32,7 +33,7 @@ class AuctionListing(models.Model):
     category = models.CharField(max_length=30, choices=ListingCategories.choices)
 
     def clean(self):
-        if not (auction_end_time > auction_start_time):
+        if not (self.auction_end_time > self.auction_start_time):
             raise ValidationError("Auction end time must be after start time")
 
 class Bid(models.Model):
