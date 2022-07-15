@@ -68,7 +68,10 @@ def register(request):
 def create_listing(request):
     if request.method == "POST":
         f = CreateListingForm(request.POST)
-        f.save()
+        listing = f.save(commit=False)
+        listing.user_fk = request.user # you can check here whether user is related any author
+        listing.save()
+
         return HttpResponseRedirect(reverse('index'))
     else:
         return render(request, "auctions/create_listing.html",

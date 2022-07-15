@@ -31,6 +31,7 @@ class AuctionListing(models.Model):
     auction_start_time = models.DateTimeField()
     auction_end_time = models.DateTimeField()
     category = models.CharField(max_length=30, choices=ListingCategories.choices)
+    user_fk = models.ForeignKey('User', on_delete=models.CASCADE)
 
     def clean(self):
         if not (self.auction_end_time > self.auction_start_time):
