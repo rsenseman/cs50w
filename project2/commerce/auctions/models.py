@@ -38,13 +38,13 @@ class AuctionListing(models.Model):
             raise ValidationError("Auction end time must be after start time")
 
 class Bid(models.Model):
-    listing_id = models.ForeignKey('AuctionListing', on_delete=models.CASCADE)
+    listing_fk = models.ForeignKey('AuctionListing', on_delete=models.CASCADE)
     created_at = models.DateTimeField(auto_now_add=True)
-    user_id = models.ForeignKey('User', on_delete=models.CASCADE)
+    user_fk = models.ForeignKey('User', on_delete=models.CASCADE)
     amount = models.DecimalField(max_digits=8, decimal_places=2)
 
 class Comment(models.Model):
-    user_id = models.ForeignKey('User', on_delete=models.CASCADE)
-    lisiting_id = models.ForeignKey('AuctionListing', on_delete=models.CASCADE)
+    user_fk = models.ForeignKey('User', on_delete=models.CASCADE)
+    lisiting_fk = models.ForeignKey('AuctionListing', on_delete=models.CASCADE)
     created_at = models.DateTimeField(auto_now_add=True)
     content = models.CharField(max_length=300)

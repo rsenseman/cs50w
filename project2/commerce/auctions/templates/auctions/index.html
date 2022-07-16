@@ -2,6 +2,9 @@
 
 {% block body %}
     <h2>Active Listings</h2>
-
-    {{ listings|unordered_list }}
+    <ul>
+    {% for listing in listings %}
+        <li><a href="{% url 'listing' listing.id %}">{{ listing.title }} (Listing #{{ listing.id }})</a></li>
+    {% endfor %}
+    </ul>
 {% endblock %}
