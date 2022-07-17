@@ -1,6 +1,6 @@
 from django.forms import ModelForm, DateInput
 
-from .models import AuctionListing, Bid
+from .models import AuctionListing, Bid, Comment
 
 class MyDateInput(DateInput):
     input_type = 'date'
@@ -27,4 +27,11 @@ class IssueBidForm(ModelForm):
         model = Bid
         fields = [
             'amount',
+        ]
+
+class CreateCommentForm(ModelForm):
+    class Meta:
+        model = Comment
+        fields = [
+            'content',
         ]

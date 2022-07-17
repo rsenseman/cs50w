@@ -2,11 +2,71 @@
 
 {% block body %}
     <h2>{{ listing.title }}</h2>
-    Current max bid: {{ max_bid }}
-    Auction ends at: {{ listing.auction_end_time }}
-    <img src="{{ listing.image_url }}" width="200" height="200">
-    <form action="{% url 'listing' listing.id %}" method="post">{% csrf_token %}
-        {{ form.as_p }}
-        <input type="submit" value="Submit Bid" />
+    {% if is_user_listing_owner %}
+    <form action="{% url 'close_listing' listing.id %}" method="post">
+        {% csrf_token %}
+        <button type="submit" name="close_listing_button" value="no_value">
+            Close Listing
+        </button>
     </form>
+    <br>
+    {% endif %}
+    {% if is_user_authenticated %}
+    <form action="{% url 'watchlist' listing.id %}" method="post">
+        {% csrf_token %}
+        <input type="hidden" id="watchlistFlag" name="is_on_watchlist_flag" value="{{ is_on_watchlist }}">
+        <button type="submit" name="watchlist_toggle" value="no_value">
+            {{ watchlist_button_text }}
+        </button>
+    </form>
+    <br>
+    {% endif %}
+    <img src="{{ listing.image_url }}" width="200" height="200">
+    <br>
+    {% if is_user_leading_bidder %}
+        {% if is_auction_closed %}
+            Bidding is over, you won the auction with a bid of ${{ max_bid }}
+        {% else %}
+            Bidding is still in progress, you have the highest bid of ${{ max_bid }}
+        {% endif %}
+    {% else %}
+        {% if is_auction_closed %}
+            Bidding is over, the winning bid was ${{ max_bid }}
+        {% else %}
+            Bidding is open, the current highest bid is ${{ max_bid }}
+        {% endif %}
+    {% endif %}
+    <br>
+
+    {% if is_user_authenticated %}
+        {% if not is_auction_closed %}
+          Auction ends at: {{ listing.auction_end_time }}
+          <form action="{% url 'listing' listing.id %}" method="post">
+              {% csrf_token %}
+              {{ form.as_p }}
+              <input type="submit" value="Submit Bid" />
+          </form>
+          <br>
+        {% endif %}
+    {% else %}
+        Login to issue a bid!
+        <br>
+    {% endif %}
+
+    {% if is_user_authenticated %}
+    <form action="{% url 'post_comment' listing.id %}" method="post">
+        {% csrf_token %}
+        {{ comment_form.as_p }}
+        <input type="submit" value="Submit Comment" />
+    </form>
+    {% else %}
+        Login to Submit Comments
+        <br>
+    {% endif %}
+
+    <ul>
+      {% for comment in comments %}
+        <li>{{ comment.created_at }} {{ comment.user_fk.username }}: {{ comment.content }}</li>
+      {% endfor %}
+    </ul>
 {% endblock %}

@@ -32,6 +32,9 @@ class AuctionListing(models.Model):
     auction_end_time = models.DateTimeField()
     category = models.CharField(max_length=30, choices=ListingCategories.choices)
     user_fk = models.ForeignKey('User', on_delete=models.CASCADE)
+    is_closed_by_user = models.BooleanField(default=False)
+    winning_bid_fk = models.ForeignKey('Bid', on_delete=models.CASCADE, null=True)
+    auction_closed_time = models.DateTimeField(null=True)
 
     def clean(self):
         if not (self.auction_end_time > self.auction_start_time):
@@ -42,9 +45,10 @@ class Bid(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     user_fk = models.ForeignKey('User', on_delete=models.CASCADE)
     amount = models.DecimalField(max_digits=8, decimal_places=2)
+    is_winning_bid = models.BooleanField(default=False)
 
 class Comment(models.Model):
     user_fk = models.ForeignKey('User', on_delete=models.CASCADE)
-    lisiting_fk = models.ForeignKey('AuctionListing', on_delete=models.CASCADE)
+    listing_fk = models.ForeignKey('AuctionListing', on_delete=models.CASCADE)
     created_at = models.DateTimeField(auto_now_add=True)
     content = models.CharField(max_length=300)
