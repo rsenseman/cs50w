@@ -1,0 +1,19 @@
+textarea {
+    min-height: 400px;
+}
+
+.sender {
+    color: red;
+}
+.recipients {
+    color: orange;
+}
+.timestamp {
+    color: green;
+}
+.subject {
+    color: blue;
+}
+.body {
+    color: violet;
+}
